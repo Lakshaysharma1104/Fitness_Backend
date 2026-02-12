@@ -3,7 +3,6 @@ package com.fitness.activityService.Controller;
 import com.fitness.activityService.DTO.ActivityRequest;
 import com.fitness.activityService.DTO.ActivityResponse;
 import com.fitness.activityService.Service.ActivityService;
-import com.fitness.activityService.model.Activity;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/fitness app/UserService/pom.xml" />
         <option value="$PROJECT_DIR$/activityService/pom.xml" />
         <option value="$PROJECT_DIR$/eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/UserService/pom.xml" />
+        <option value="$PROJECT_DIR$/aiService/pom.xml" />
       </list>
     </option>
   </component>
