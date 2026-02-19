@@ -2,10 +2,10 @@ spring:
   application:
     name: aiService
   mongodb:
-    uri: mongodb://localhost:27017
-    database: aiActivityFitness
+    uri: mongodb://localhost:27017/aiRecommendation
+    database: aiRecommendation
 server:
-  port: 8082
+  port: 8083
 
 eureka:
   client:
