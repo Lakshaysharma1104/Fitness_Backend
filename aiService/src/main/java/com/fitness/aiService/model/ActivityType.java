@@ -1,4 +1,4 @@
-package com.fitness.activityService.model;
+package com.fitness.aiService.model;
 
 public enum ActivityType {
     RUNNING,

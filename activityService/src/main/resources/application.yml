@@ -2,11 +2,20 @@ spring:
   application:
     name: activityService
   mongodb:
-    uri: mongodb://localhost:27017/aiRecommendation
-    database: aiRecommendation
+    uri: mongodb://localhost:27017/activityService
+    database: activityService
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    name: activity-events
 
 server:
-  port: 8083
+  port: 8082
 
 eureka:
   client:
