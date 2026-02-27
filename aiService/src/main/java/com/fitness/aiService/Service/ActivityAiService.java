@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -51,12 +49,70 @@ public class ActivityAiService {
             addAnalysisSection(fullAnalysis,analysisNode,"pace","Pace:");
             addAnalysisSection(fullAnalysis,analysisNode,"heartRate","Heart Rate:");
             addAnalysisSection(fullAnalysis,analysisNode,"caloriesBurnedReported","Calories:");
+
+
             List<String> improvements = extractImprovements(analysisJson.path("improvements"));
+            List<String> suggestions = extractSuggestion(analysisJson.path("suggestions"));
+            List<String> safety = extractSafetyGuidelines(analysisJson.path("safety"));
+            return Recommendation.builder()
+                    .activityId(activity.getId())
+                    .userId(activity.getUserId())
+                    .type(activity.getType().toString())
+                    .recommendation(fullAnalysis.toString())
+                    .improvements(improvements)
+                    .suggestions(suggestions)
+                    .safety(safety)
+                    .createdAT(LocalDateTime.now())
+                    .build();
+            
 
         }catch (Exception e){
-            log.error("WARNING response from ai is ",e);
+            log.error("WARNING response from ai is {}",String.valueOf(e));
+            return createDefaultRecommendation(activity);
         }
-        return null;
+
+    }
+
+    private Recommendation createDefaultRecommendation(Activity activity) {
+        return Recommendation.builder()
+                .activityId(activity.getId())
+                .userId(activity.getUserId())
+                .type(activity.getType().toString())
+                .recommendation("Unable to generate detailed analysis")
+                .improvements(Collections.singletonList("Continue with your current routine"))
+                .suggestions(Collections.singletonList("Consider consulting a fitness consultant"))
+                .safety(Arrays.asList(
+                        "Always warm up before exercise",
+                        "Stay Hydrated",
+                        "Listen to your body"
+                ))
+                .createdAT(LocalDateTime.now())
+                .build();
+
+    }
+
+    private List<String> extractSafetyGuidelines(JsonNode safetyNode) {
+        List<String> safety = new ArrayList<>();
+        if(safetyNode.isArray()){
+            safetyNode.forEach(item -> safety.add(item.asText()));
+        }
+        return safety.isEmpty()?
+                Collections.singletonList("follow general safety guidelines"):
+                safety;
+    }
+
+    private List<String> extractSuggestion(JsonNode suggestionNode) {
+        List<String> suggestions = new ArrayList<>();
+        if(suggestionNode.isArray()){
+            suggestionNode.forEach(suggestion -> {
+                String workout = suggestion.path("workout").asText();
+                String description = suggestion.path("description").asText();
+                suggestions.add(String.format("%s:%s",workout,description));
+            });
+        }
+        return suggestions.isEmpty()?
+                Collections.singletonList("no specific suggestions provided"):
+                suggestions;
     }
 
     private List<String> extractImprovements(JsonNode improvementsNode) {

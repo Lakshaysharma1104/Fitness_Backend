@@ -1,9 +1,7 @@
 package com.fitness.aiService.Service;
 
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Service
-
+@Slf4j
 public class GeminiService {
 
     private final WebClient webClient;
@@ -21,6 +19,7 @@ public class GeminiService {
 
     @Value("${gemini.api.key}")
     private String geminiApiKey;
+
 
 
     public GeminiService(WebClient.Builder webClientBuilder) {
@@ -36,13 +35,18 @@ public class GeminiService {
                 }
         );
 
-        String response = webClient.post()
-                .uri(geminiApiUrl + geminiApiKey)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        String response = null;
+        try {
+            response = webClient.post()
+                    .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("This is exception{}", String.valueOf(e));
+        }
 
         return response;
     }
