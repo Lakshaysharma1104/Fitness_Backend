@@ -7,7 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="gateWay" />
         <module name="eureka" />
+        <module name="configServer" />
       </profile>
       <profile name="Annotation profile for aiService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -27,7 +29,9 @@
       <module name="UserService" options="-parameters" />
       <module name="activityService" options="-parameters" />
       <module name="aiService" options="-parameters" />
+      <module name="configServer" options="-parameters" />
       <module name="eureka" options="-parameters" />
+      <module name="gateWay" options="-parameters" />
     </option>
   </component>
 </project>
