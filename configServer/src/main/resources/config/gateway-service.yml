@@ -23,6 +23,12 @@ spring:
               uri: lb://AI-SERVICE
               predicates:
                 - Path=/api/recommendations/**
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          jwk-set-uri: http://localhost:8181/realms/Fitness-app/protocol/openid-connect/certs
+
 
 server:
   port: 8080

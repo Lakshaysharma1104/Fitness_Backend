@@ -5,11 +5,9 @@ import com.fitness.UserService.Dto.RegisterRequest;
 import com.fitness.UserService.Dto.UserResponse;
 import com.fitness.UserService.Service.Repository.UserRepository;
 import com.fitness.UserService.models.User;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,26 +20,42 @@ public class UserService {
 
     public UserResponse register(RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException( "Email already in use");
+            User existingUser = userRepository.findByEmail(request.getEmail());
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(existingUser.getId());
+            userResponse.setEmail(existingUser.getEmail());
+            userResponse.setKeyCloakId(existingUser.getKeyCloakId());
+            userResponse.setFirstName(existingUser.getFirstName());
+            userResponse.setLastName(existingUser.getLastName());
+            userResponse.setPassword(existingUser.getPassword());
+            userResponse.setCreatedAt(existingUser.getCreatedAt());
+            userResponse.setUpdatedAt(existingUser.getUpdatedAt());
+            return userResponse;
         }
          User user = new User();
-         user.setEmail(request.getEmail());
+        user.setKeyCloakId(request.getKeyCloakId());
+        user.setEmail(request.getEmail());
          user.setFirstName(request.getFirstName());
          user.setLastName(request.getLastName());
          user.setPassword(request.getPassword());
 
          User savedUser = userRepository.save(user);
-         UserResponse userResponse = new UserResponse();
-         userResponse.setId(savedUser.getId());
+
+        return getUserResponse(savedUser);
+
+    }
+
+    private static UserResponse getUserResponse(User savedUser) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(savedUser.getId());
+        userResponse.setKeyCloakId(savedUser.getKeyCloakId());
         userResponse.setEmail(savedUser.getEmail());
         userResponse.setFirstName(savedUser.getFirstName());
         userResponse.setLastName(savedUser.getLastName());
         userResponse.setPassword(savedUser.getPassword());
         userResponse.setCreatedAt(savedUser.getCreatedAt());
         userResponse.setUpdatedAt(savedUser.getUpdatedAt());
-
-        return  userResponse;
-
+        return userResponse;
     }
 
     public  UserResponse getUserProfile(String userId) {
@@ -60,6 +74,6 @@ public class UserService {
 
     public  Boolean existByUserId(String userId) {
         log.info("calling user for service {}",userId);
-        return userRepository.existsById(userId);
+        return userRepository.existsByKeyCloakId(userId);
     }
 }
